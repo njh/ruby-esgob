@@ -1,4 +1,7 @@
-# Esgob
+[![Build Status](https://travis-ci.org/njh/ruby-esgob.svg)](https://travis-ci.org/njh/ruby-esgob)
+
+Esgob Ruby Client
+=================
 
 TODO: Write a gem description
 
