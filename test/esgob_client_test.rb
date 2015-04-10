@@ -115,5 +115,22 @@ class TestClient < MiniTest::Unit::TestCase
       response
     )
   end
+  
+  def test_domains_list
+    register_fixture('domains.list')
+    response = @client.domains_list
+    
+    assert_equal(
+      '/1.0/domains.list?account=acct&f=json&key=xxxx',
+      FakeWeb.last_request.path
+    )
+    assert_equal(
+      [
+        {"domain"=>"example.com", "type"=>"slave"},
+        {"domain"=>"example.uk", "type"=>"slave"}
+      ],
+      response
+    )
+  end
 
 end

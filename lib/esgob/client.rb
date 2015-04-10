@@ -50,6 +50,11 @@ class Esgob::Client
     call('accounts.get')
   end
   
+  # Returns all hosted domains
+  def domains_list
+    call('domains.list')
+  end
+  
   
   protected
 

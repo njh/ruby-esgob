@@ -1,0 +1,12 @@
+{
+    "domains": [
+        {
+            "domain": "example.com", 
+            "type": "slave"
+        }, 
+        {
+            "domain": "example.uk", 
+            "type": "slave"
+        }
+    ]
+}
