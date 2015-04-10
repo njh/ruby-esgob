@@ -22,4 +22,52 @@ class Esgob::Client
     self.api_key  ||= ENV['ESGOB_API_KEY']
   end
   
+  def call(function_name, arguments={})
+    uri = URI(endpoint + function_name)
+    uri.query = build_query(default_arguments.merge(arguments))
+
+    res = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+      req = Net::HTTP::Get.new(uri.request_uri)
+      req['Accept'] = 'application/json'
+      http.request(req)
+    end      
+
+    if res.code =~ /^2/
+      if res.content_type == 'application/json'
+        symbolize_keys! JSON.parse(res.body)
+      else
+       raise "HTTP response from ESGOB is not of type JSON"
+     end
+    else
+      # The badly named method throws an Net::HTTP exception
+      res.value
+    end
+  
+  end
+  
+  
+  protected
+
+  def symbolize_keys!(hash)
+    hash.keys.each do |key|
+      ks = key.to_sym
+      hash[ks] = hash.delete(key)
+      symbolize_keys!(hash[ks]) if hash[ks].kind_of?(Hash)
+    end
+    return hash
+  end
+
+  def default_arguments
+    {
+      :account => account,
+      :key => api_key,
+      :f => 'json'
+    }
+  end
+
+  def build_query(hash)
+    hash.keys.sort.map { |key|
+      URI::escape(key.to_s) + '=' + URI::escape(hash[key].to_s)
+    }.join('&')
+  end
 end

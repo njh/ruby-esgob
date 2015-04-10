@@ -22,7 +22,7 @@ def register_fixture(api_call, fixture_name=nil)
   
   FakeWeb.register_uri(
     :get, %r[https://api.esgob.com/1.0/#{api_call}],
-    :status => "200",
+    :status => ["200", "OK"],
     :content_type => "application/json",
     :body => File.read(fixture_file)
   )
