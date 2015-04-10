@@ -172,4 +172,26 @@ class TestClient < MiniTest::Unit::TestCase
     assert_equal({:action=>"domain deleted"}, response)
   end
 
+  def test_domains_slaves_forcetransfer
+    register_fixture('domains.slaves.forcetransfer')
+    response = @client.domains_slaves_forcetransfer('example.org')
+    
+    assert_equal(
+      '/1.0/domains.slaves.forcetransfer?account=acct&domain=example.org&f=json&key=xxxx',
+      FakeWeb.last_request.path
+    )
+    assert_equal({:action=>"Domain AXFR requested from master"}, response)
+  end
+
+  def test_domains_slaves_updatemasterip
+    register_fixture('domains.slaves.updatemasterip')
+    response = @client.domains_slaves_updatemasterip('example.org', '195.177.253.167')
+    
+    assert_equal(
+      '/1.0/domains.slaves.updatemasterip?account=acct&domain=example.org&f=json&key=xxxx&masterip=195.177.253.167',
+      FakeWeb.last_request.path
+    )
+    assert_equal({:action=>"domain master IP updated"}, response)
+  end
+
 end

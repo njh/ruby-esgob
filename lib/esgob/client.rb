@@ -70,6 +70,15 @@ class Esgob::Client
     call('domains.slaves.delete', :domain => domain)
   end
   
+  # Force AXFR / transfer from master of a slave domain
+  def domains_slaves_forcetransfer(domain)
+    call('domains.slaves.forcetransfer', :domain => domain)
+  end
+  
+  # Updates the master IP of a slave domain
+  def domains_slaves_updatemasterip(domain, masterip)
+    call('domains.slaves.updatemasterip', :domain => domain, :masterip => masterip)
+  end
   end
   
   
