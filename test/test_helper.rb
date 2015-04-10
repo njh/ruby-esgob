@@ -2,9 +2,8 @@ $:.unshift(File.join(File.dirname(__FILE__),'..','lib'))
 
 require 'rubygems'
 require 'bundler'
-require 'minitest/autorun'
-
 Bundler.require(:default, :development)
+require 'minitest/autorun'
 
 unless RUBY_VERSION =~ /^1\.8/
   SimpleCov.start
