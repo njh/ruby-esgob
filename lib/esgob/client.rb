@@ -45,6 +45,11 @@ class Esgob::Client
   
   end
   
+  # Return account status; credit balance, etc
+  def accounts_get
+    call('accounts.get')
+  end
+  
   
   protected
 

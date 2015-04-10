@@ -9,7 +9,7 @@ class TestClient < MiniTest::Unit::TestCase
     FakeWeb.clean_registry
     @client = Esgob::Client.new('acct', 'xxxx')
   end
-
+  
   def teardown
     # Reset environment variables after each test
     ENV.delete('ESGOB_ACCOUNT')
@@ -100,6 +100,20 @@ class TestClient < MiniTest::Unit::TestCase
       )
       response = @client.call('accounts.get')
     end
+  end
+  
+  def test_accounts_get
+    register_fixture('accounts.get')
+    response = @client.accounts_get
+    
+    assert_equal(
+      '/1.0/accounts.get?account=acct&f=json&key=xxxx',
+      FakeWeb.last_request.path
+    )
+    assert_equal(
+      {:credits=>48, :users=>[], :added=>1422792434, :id=>"xyz", :name=>"Person Name"},
+      response
+    )
   end
 
 end
