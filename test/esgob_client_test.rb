@@ -132,5 +132,44 @@ class TestClient < MiniTest::Unit::TestCase
       response
     )
   end
+  
+  def test_domains_slaves_list
+    register_fixture('domains.slaves.list')
+    response = @client.domains_slaves_list
+    
+    assert_equal(
+      '/1.0/domains.slaves.list?account=acct&f=json&key=xxxx',
+      FakeWeb.last_request.path
+    )
+    assert_equal(
+      [
+        {"domain"=>"example.com", "type"=>"slave", "masterip"=>"195.177.253.166"},
+        {"domain"=>"example.uk", "type"=>"slave", "masterip"=>"195.177.253.166"}
+      ],
+      response
+    )
+  end
+  
+  def test_domains_slaves_add
+    register_fixture('domains.slaves.add')
+    response = @client.domains_slaves_add('example.org', '195.177.253.166')
+    
+    assert_equal(
+      '/1.0/domains.slaves.add?account=acct&domain=example.org&f=json&key=xxxx&masterip=195.177.253.166',
+      FakeWeb.last_request.path
+    )
+    assert_equal({:action=>"domain added"}, response)
+  end
+
+  def test_domains_slaves_delete
+    register_fixture('domains.slaves.delete')
+    response = @client.domains_slaves_delete('example.org')
+    
+    assert_equal(
+      '/1.0/domains.slaves.delete?account=acct&domain=example.org&f=json&key=xxxx',
+      FakeWeb.last_request.path
+    )
+    assert_equal({:action=>"domain deleted"}, response)
+  end
 
 end

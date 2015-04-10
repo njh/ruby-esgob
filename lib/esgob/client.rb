@@ -52,7 +52,24 @@ class Esgob::Client
   
   # Returns all hosted domains
   def domains_list
-    call('domains.list')
+    call('domains.list')[:domains]
+  end
+  
+  # Returns all hosted slave domains
+  def domains_slaves_list
+    call('domains.slaves.list')[:domains]
+  end
+  
+  # Adds a new slave domain
+  def domains_slaves_add(domain, masterip)
+    call('domains.slaves.add', :domain => domain, :masterip => masterip)
+  end
+  
+  # Deletes a slave domain
+  def domains_slaves_delete(domain)
+    call('domains.slaves.delete', :domain => domain)
+  end
+  
   end
   
   

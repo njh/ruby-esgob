@@ -1,0 +1,14 @@
+{
+    "domains": [
+        {
+            "domain": "example.com", 
+            "type": "slave", 
+            "masterip": "195.177.253.166"
+        }, 
+        {
+            "domain": "example.uk", 
+            "type": "slave", 
+            "masterip": "195.177.253.166"
+        }
+    ]
+}
