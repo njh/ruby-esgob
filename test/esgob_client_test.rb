@@ -216,4 +216,16 @@ class TestClient < MiniTest::Unit::TestCase
     assert_equal({:action=>"domain AXFR out IPs updated"}, response)
   end
 
+  def test_domains_tools_soacheck
+    register_fixture('domains.tools.soacheck')
+    response = @client.domains_tools_soacheck('example.org')
+
+    assert_equal(
+      '/1.0/domains.tools.soacheck?account=acct&domain=example.org&f=json&key=xxxx',
+      FakeWeb.last_request.path
+    )
+    assert_equal('example.org', response[:domain])
+    refute_empty(response[:responses])
+  end
+
 end

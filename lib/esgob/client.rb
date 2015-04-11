@@ -6,7 +6,7 @@ class Esgob::Client
   attr_accessor :endpoint
   attr_accessor :account
   attr_accessor :api_key
-  
+
   DEFAULT_API_ENDPOINT = "https://api.esgob.com/1.0/".freeze
 
   def initialize(*args)
@@ -21,7 +21,7 @@ class Esgob::Client
     self.account  ||= ENV['ESGOB_ACCOUNT']
     self.api_key  ||= ENV['ESGOB_API_KEY']
   end
-  
+
   def call(function_name, arguments={})
     uri = URI(endpoint + function_name)
     uri.query = build_query(default_arguments.merge(arguments))
@@ -30,68 +30,72 @@ class Esgob::Client
       req = Net::HTTP::Get.new(uri.request_uri)
       req['Accept'] = 'application/json'
       http.request(req)
-    end      
+    end
 
     if res.code =~ /^2/
       if res.content_type == 'application/json'
         symbolize_keys! JSON.parse(res.body)
       else
        raise "HTTP response from ESGOB is not of type JSON"
-     end
+      end
     else
       # The badly named method throws an Net::HTTP exception
       res.value
     end
-  
+
   end
-  
+
   # Return account status; credit balance, etc
   def accounts_get
     call('accounts.get')
   end
-  
+
   # Returns all hosted domains
   def domains_list
     call('domains.list')[:domains]
   end
-  
+
   # Returns all hosted slave domains
   def domains_slaves_list
     call('domains.slaves.list')[:domains]
   end
-  
+
   # Adds a new slave domain
   def domains_slaves_add(domain, masterip)
     call('domains.slaves.add', :domain => domain, :masterip => masterip)
   end
-  
+
   # Deletes a slave domain
   def domains_slaves_delete(domain)
     call('domains.slaves.delete', :domain => domain)
   end
-  
+
   # Force AXFR / transfer from master of a slave domain
   def domains_slaves_forcetransfer(domain)
     call('domains.slaves.forcetransfer', :domain => domain)
   end
-  
+
   # Updates the master IP of a slave domain
   def domains_slaves_updatemasterip(domain, masterip)
     call('domains.slaves.updatemasterip', :domain => domain, :masterip => masterip)
   end
-  
+
   # Add a host allowed to AXFR out
   def domains_slaves_axfrout_add(domain, axfrip)
     call('domains.slaves.axfrout.add', :domain => domain, :axfrip => axfrip)
   end
-  
+
   # Account	Delete a host allowed to AXFR out
   def domains_slaves_axfrout_delete(domain, axfrip)
     call('domains.slaves.axfrout.delete', :domain => domain, :axfrip => axfrip)
   end
+
+  # Retrieve the domain SOA serial number from the master and each anycast node
+  def domains_tools_soacheck(domain)
+    call('domains.tools.soacheck', :domain => domain)
   end
-  
-  
+
+
   protected
 
   def symbolize_keys!(hash)

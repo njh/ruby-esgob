@@ -1,0 +1,185 @@
+{
+    "domain": "example.org", 
+    "responses": {
+        "masters": [
+            {
+                "soa": null, 
+                "ip": "195.177.253.167", 
+                "response": "fail"
+            }
+        ], 
+        "anycastnodes": [
+            {
+                "soa": null, 
+                "country": "dk", 
+                "ref": "b767bbde", 
+                "location": "Denmark, Copenhagen", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "ie", 
+                "ref": "a5829255", 
+                "location": "Dublin, Ireland", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "gb", 
+                "ref": "3b3ba18c", 
+                "location": "England, Fareham", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "gb", 
+                "ref": "pw77xk42", 
+                "location": "England, Hemel Hempstead", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "gb", 
+                "ref": "b0r2k2c4", 
+                "location": "England, London, A", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "gb", 
+                "ref": "ql7f823b", 
+                "location": "England, London, B", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "gb", 
+                "ref": "a645b1b8", 
+                "location": "England, Studley", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "de", 
+                "ref": "zeij3q25", 
+                "location": "Germany, Bremen", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "gb", 
+                "ref": "a9a9aa41", 
+                "location": "London, England, D", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "us", 
+                "ref": "eeedd3pp", 
+                "location": "Los Angeles, US", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "nl", 
+                "ref": "5cf4cc31", 
+                "location": "Netherlands, Amsterdam", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "gb", 
+                "ref": "4f31ad80", 
+                "location": "Northern Ireland, Belfast", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "is", 
+                "ref": "2be59c70", 
+                "location": "Reykjavik, Iceland", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "is", 
+                "ref": "5a235000", 
+                "location": "Reykjavik, Iceland (RIX)", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "gb", 
+                "ref": "oeo8uewk", 
+                "location": "Scotland, Edinburgh", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "sg", 
+                "ref": "a4fd893c", 
+                "location": "Singapore", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "au", 
+                "ref": "1277c255", 
+                "location": "Sydney, Australia", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "ru", 
+                "ref": "a661cda4", 
+                "location": "Ulyanovsk, Russia (ULN-IX)", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "us", 
+                "ref": "h1m9maf8", 
+                "location": "United States, Boston", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "us", 
+                "ref": "fgej72a1", 
+                "location": "United States, Detroit", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "at", 
+                "ref": "dc6aaec4", 
+                "location": "Vienna, Austria", 
+                "response": "fail"
+            }, 
+            {
+                "soa": null, 
+                "country": "pl", 
+                "ref": "60c64eb3", 
+                "location": "Warsaw, Poland", 
+                "response": "fail"
+            }
+        ], 
+        "axfrnodes": [
+            {
+                "soa": null, 
+                "ref": "1cd05e5d", 
+                "response": "fail"
+            }
+        ]
+    }, 
+    "cached": false, 
+    "timestamp": 1428774478, 
+    "analysis": {
+        "mastersok": true, 
+        "consistent": true, 
+        "earliest": null, 
+        "nodesok": false, 
+        "latest": null
+    }, 
+    "cachefor": 60
+}
