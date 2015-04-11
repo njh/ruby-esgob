@@ -194,4 +194,26 @@ class TestClient < MiniTest::Unit::TestCase
     assert_equal({:action=>"domain master IP updated"}, response)
   end
 
+  def test_domains_slaves_axfrout_add
+    register_fixture('domains.slaves.axfrout.add')
+    response = @client.domains_slaves_axfrout_add('example.org', '195.177.253.1')
+    
+    assert_equal(
+      '/1.0/domains.slaves.axfrout.add?account=acct&axfrip=195.177.253.1&domain=example.org&f=json&key=xxxx',
+      FakeWeb.last_request.path
+    )
+    assert_equal({:action=>"domain AXFR out IPs updated"}, response)
+  end
+
+  def test_domains_slaves_axfrout_delete
+    register_fixture('domains.slaves.axfrout.delete')
+    response = @client.domains_slaves_axfrout_delete('example.org', '195.177.253.1')
+    
+    assert_equal(
+      '/1.0/domains.slaves.axfrout.delete?account=acct&axfrip=195.177.253.1&domain=example.org&f=json&key=xxxx',
+      FakeWeb.last_request.path
+    )
+    assert_equal({:action=>"domain AXFR out IPs updated"}, response)
+  end
+
 end

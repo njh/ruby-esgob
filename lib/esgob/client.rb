@@ -79,6 +79,16 @@ class Esgob::Client
   def domains_slaves_updatemasterip(domain, masterip)
     call('domains.slaves.updatemasterip', :domain => domain, :masterip => masterip)
   end
+  
+  # Add a host allowed to AXFR out
+  def domains_slaves_axfrout_add(domain, axfrip)
+    call('domains.slaves.axfrout.add', :domain => domain, :axfrip => axfrip)
+  end
+  
+  # Account	Delete a host allowed to AXFR out
+  def domains_slaves_axfrout_delete(domain, axfrip)
+    call('domains.slaves.axfrout.delete', :domain => domain, :axfrip => axfrip)
+  end
   end
   
   
