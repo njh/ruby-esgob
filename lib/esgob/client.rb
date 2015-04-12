@@ -17,9 +17,17 @@ class Esgob::Client
       self.api_key = args[1]
     end
 
-    self.endpoint ||= DEFAULT_API_ENDPOINT
     self.account  ||= ENV['ESGOB_ACCOUNT']
     self.api_key  ||= ENV['ESGOB_API_KEY']
+    self.endpoint ||= DEFAULT_API_ENDPOINT
+
+    if account.nil? or account.empty?
+      raise(ArgumentError, "No account name configured for Esgob")
+    end
+
+    if api_key.nil? or api_key.empty?
+      raise(ArgumentError, "No API key configured for Esgob")
+    end
   end
 
   def call(function_name, arguments={})

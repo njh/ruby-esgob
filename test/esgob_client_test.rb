@@ -44,6 +44,20 @@ class TestClient < MiniTest::Unit::TestCase
     assert_equal 'http://api.example.com/', client.endpoint
   end
 
+  def test_new_client_with_no_account
+    ENV.delete('ESGOB_ACCOUNT')
+    assert_raises(ArgumentError) do
+      Esgob::Client.new(nil, 'mykey')
+    end
+  end
+
+  def test_new_client_with_no_api_key
+    ENV.delete('ESGOB_API_KEY')
+    assert_raises(ArgumentError) do
+      Esgob::Client.new('acct', nil)
+    end
+  end
+
   def test_call_with_no_parameters
     register_fixture('accounts.get')
     response = @client.call('accounts.get')
