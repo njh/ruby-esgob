@@ -116,7 +116,7 @@ class Esgob::Client
   end
 
   def build_query(hash)
-    hash.keys.sort.map { |key|
+    hash.keys.sort{|a,b| a.to_s <=> b.to_s}.map { |key|
       URI::escape(key.to_s) + '=' + URI::escape(hash[key].to_s)
     }.join('&')
   end
