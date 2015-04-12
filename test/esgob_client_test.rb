@@ -126,8 +126,8 @@ class TestClient < MiniTest::Unit::TestCase
     )
     assert_equal(
       [
-        {"domain"=>"example.com", "type"=>"slave"},
-        {"domain"=>"example.uk", "type"=>"slave"}
+        {:domain => "example.com", :type => "slave"},
+        {:domain => "example.uk",  :type => "slave"}
       ],
       response
     )
@@ -143,8 +143,8 @@ class TestClient < MiniTest::Unit::TestCase
     )
     assert_equal(
       [
-        {"domain"=>"example.com", "type"=>"slave", "masterip"=>"195.177.253.166"},
-        {"domain"=>"example.uk", "type"=>"slave", "masterip"=>"195.177.253.166"}
+        {:domain => "example.com", :type => "slave", :masterip => "195.177.253.166"},
+        {:domain => "example.uk",  :type => "slave", :masterip => "195.177.253.166"}
       ],
       response
     )

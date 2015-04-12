@@ -102,7 +102,12 @@ class Esgob::Client
     hash.keys.each do |key|
       ks = key.to_sym
       hash[ks] = hash.delete(key)
-      symbolize_keys!(hash[ks]) if hash[ks].kind_of?(Hash)
+      case hash[ks]
+        when Hash
+          symbolize_keys!(hash[ks])
+        when Array
+          hash[ks].each {|item| symbolize_keys!(item) if item.kind_of?(Hash)}
+      end
     end
     return hash
   end
