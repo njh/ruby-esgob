@@ -225,4 +225,7 @@ class TestClient < MiniTest::Unit::TestCase
     refute_empty(response[:responses])
   end
 
+  def test_inspect
+    assert_match("#<Esgob::Client account=acct>", @client.inspect)
+  end
 end

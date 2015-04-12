@@ -100,6 +100,9 @@ class Esgob::Client
     call('domains.tools.soacheck', :domain => domain)
   end
 
+  def inspect
+    "\#<#{self.class} account=#{@account}>"
+  end
 
   protected
 
