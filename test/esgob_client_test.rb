@@ -81,7 +81,7 @@ class TestClient < MiniTest::Unit::TestCase
   def test_call_with_404_error
     assert_raises(Net::HTTPServerException) do
       FakeWeb.register_uri(
-        :get, %r[https://api.esgob.com/1.0/],
+        :get, %r[^https?://api\.esgob\.com(:443)?/],
         :status => ["404", "Not Found"],
         :content_type => "application/json",
         :body => '{}'
@@ -93,7 +93,7 @@ class TestClient < MiniTest::Unit::TestCase
   def test_call_with_non_json_reponse
     assert_raises(RuntimeError) do
       FakeWeb.register_uri(
-        :get, %r[https://api.esgob.com/1.0/],
+        :get, %r[^https?://api\.esgob\.com(:443)?/],
         :status => ["200", "OK"],
         :content_type => "text/plain",
         :body => 'This is plain text'

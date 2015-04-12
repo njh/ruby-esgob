@@ -20,7 +20,7 @@ def register_fixture(api_call, fixture_name=nil)
   fixture_file = File.join(File.dirname(__FILE__), 'fixtures', fixture_name + '.json')
 
   FakeWeb.register_uri(
-    :get, %r[https://api.esgob.com/1.0/#{api_call}],
+    :get, %r[^https?://api\.esgob\.com(:443)?/1.0/#{api_call}],
     :status => ["200", "OK"],
     :content_type => "application/json",
     :body => File.read(fixture_file)
