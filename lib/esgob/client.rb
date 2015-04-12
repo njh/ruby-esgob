@@ -55,9 +55,14 @@ class Esgob::Client
     call('domains.list')[:domains]
   end
 
-  # Returns all hosted slave domains
+  # Returns all hosted slave domains as a hash
+  # 
   def domains_slaves_list
-    call('domains.slaves.list')[:domains]
+    Hash[
+      call('domains.slaves.list')[:domains].map do |item|
+        [item[:domain], item[:masterip]]
+      end
+    ]
   end
 
   # Adds a new slave domain

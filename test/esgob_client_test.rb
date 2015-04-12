@@ -142,10 +142,7 @@ class TestClient < MiniTest::Unit::TestCase
       FakeWeb.last_request.path
     )
     assert_equal(
-      [
-        {:domain => "example.com", :type => "slave", :masterip => "195.177.253.166"},
-        {:domain => "example.uk",  :type => "slave", :masterip => "195.177.253.166"}
-      ],
+      {"example.com"=>"195.177.253.166", "example.uk"=>"195.177.253.166"},
       response
     )
   end
