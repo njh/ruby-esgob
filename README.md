@@ -76,6 +76,22 @@ See the [API documentation] for full details.
 5. Create a new Pull Request
 
 
+## License
+
+The esgob ruby gem is licensed under the terms of the MIT license.
+See the file LICENSE for details.
+
+
+## Contact
+
+* Author:    Nicholas J Humfrey
+* Email:     njh@aelius.com
+* Twitter:   [@njh]
+* Home Page: http://www.aelius.com/njh/
+
+
+[@njh]:                   http://twitter.com/njh
+
 [Esgob Ltd]:              https://www.esgob.com/
 [Esgob API]:              https://noc.esgob.com/docs/api
 [international network]:  https://noc.esgob.com/status/anycast_instances
