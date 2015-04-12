@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["njh@aelius.com"]
   spec.summary       = %q{Client library for talking to the Esgob anycast DNS API.}
   #spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.homepage      = 'http://github.com/njh/ruby-esgob'
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
