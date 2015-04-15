@@ -64,7 +64,7 @@ class Esgob::Client
   end
 
   # Returns all hosted slave domains as a hash
-  # 
+  #
   def domains_slaves_list
     Hash[
       call('domains.slaves.list')[:domains].map do |item|
@@ -106,6 +106,32 @@ class Esgob::Client
   # Retrieve the domain SOA serial number from the master and each anycast node
   def domains_tools_soacheck(domain)
     call('domains.tools.soacheck', :domain => domain)
+  end
+
+  # Given a list of domains and a master IP, add and delete domains
+  # so that the Esgob account matches the local list
+  def domains_slaves_sync(domains, masterip)
+    existing_domains = domains_slaves_list
+
+    # Add any missing domains
+    domains.each do |domain|
+      unless existing_domains.include?(domain)
+        domains_slaves_add(domain, masterip)
+      end
+    end
+
+    # Now check the existing domains
+    existing_domains.keys.each do |domain|
+      if domains.include?(domain)
+        # Update the masterip if it isn't correct
+        if existing_domains[domain] != masterip
+          domains_slaves_updatemasterip(domain, masterip)
+        end
+      else
+        # Delete domain; not on list
+        domains_slaves_delete(domain)
+      end
+    end
   end
 
   def inspect

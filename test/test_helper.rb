@@ -4,6 +4,7 @@ require 'rubygems'
 require 'bundler'
 Bundler.require(:default, :development)
 require 'minitest/autorun'
+require 'mocha/mini_test'
 
 unless RUBY_VERSION =~ /^1\.8/
   SimpleCov.start
