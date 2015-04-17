@@ -67,7 +67,13 @@ class TestClient < MiniTest::Unit::TestCase
       FakeWeb.last_request.path
     )
     assert_equal(
-      {:credits=>48, :users=>[], :added=>1422792434, :id=>"xyz", :name=>"Person Name"},
+      {
+        :credits => 48,
+        :users => [],
+        :added => 1422792434,
+        :id => "xyz",
+        :name => "Person Name"
+      },
       response
     )
   end
@@ -125,7 +131,13 @@ class TestClient < MiniTest::Unit::TestCase
       FakeWeb.last_request.path
     )
     assert_equal(
-      {:credits=>48, :users=>[], :added=>1422792434, :id=>"xyz", :name=>"Person Name"},
+      {
+        :credits => 48,
+        :users => [],
+        :added => Time.parse('2015-02-01 12:07:14 +0000'),
+        :id => "xyz",
+        :name => "Person Name"
+      },
       response
     )
   end
@@ -251,18 +263,18 @@ class TestClient < MiniTest::Unit::TestCase
     @client.expects(:domains_slaves_list).with().returns({})
     @client.expects(:domains_slaves_add).with('a.com', '195.177.253.1').returns({:action => "domain added"})
     @client.expects(:domains_slaves_add).with('b.com', '195.177.253.1').returns({:action => "domain added"})
-    
+
     @client.domains_slaves_sync(['a.com', 'b.com'], '195.177.253.1')
   end
-  
+
   def test_domains_slaves_sync_add_and_delete
     @client.expects(:domains_slaves_list).with().returns({'a.com' => '195.177.253.1'})
     @client.expects(:domains_slaves_delete).with('a.com').returns({:action => "domain deleted"})
     @client.expects(:domains_slaves_add).with('b.com', '195.177.253.1').returns({:action => "domain added"})
-    
+
     @client.domains_slaves_sync(['b.com'], '195.177.253.1')
   end
-  
+
   def test_domains_slaves_sync_add_and_delete_and_change_masterip
     @client.expects(:domains_slaves_list).with().returns(
       {'a.com' => '195.177.253.1', 'c.com' => '127.0.0.1'}
@@ -270,7 +282,7 @@ class TestClient < MiniTest::Unit::TestCase
     @client.expects(:domains_slaves_delete).with('a.com').returns({:action => "domain deleted"})
     @client.expects(:domains_slaves_add).with('b.com', '195.177.253.1').returns({:action => "domain added"})
     @client.expects(:domains_slaves_updatemasterip).with('c.com', '195.177.253.1').returns({:action => "domain master IP updated"})
-    
+
     @client.domains_slaves_sync(['b.com', 'c.com'], '195.177.253.1')
   end
 

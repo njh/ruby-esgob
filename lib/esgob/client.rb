@@ -55,7 +55,9 @@ class Esgob::Client
 
   # Return account status; credit balance, etc
   def accounts_get
-    call('accounts.get')
+    account = call('accounts.get')
+    account[:added] = Time.at(account[:added]) if account[:added].is_a?(Fixnum)
+    account
   end
 
   # Returns all hosted domains
