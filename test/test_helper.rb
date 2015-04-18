@@ -27,3 +27,12 @@ def register_fixture(api_call, fixture_name=nil)
     :body => File.read(fixture_file)
   )
 end
+
+def capture(stream)
+  original = eval "$#{stream}"
+  eval "$#{stream} = StringIO.new"
+  yield
+  result = eval("$#{stream}").string
+  eval "$#{stream} = original"
+  result
+end
