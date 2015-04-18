@@ -72,6 +72,22 @@ class Esgob::CLI < Thor
     end
   end
 
+  desc "soacheck DOMAIN",
+       "Fetch domain SOA serial number for all nodes"
+  def soacheck(domain)
+    response = client.domains_tools_soacheck(domain)
+    print_table(
+      [['Identifier', 'Type', 'Country', 'SOA', 'Response']] +
+      [['----------', '----', '-------', '---', '--------']] +
+      response[:responses][:masters].map do |node|
+        [node[:ip], "master", '', node[:soa], node[:response]]
+      end + 
+      response[:responses][:anycastnodes].map do |node|
+        [node[:ref], 'anycast', node[:country], node[:soa], node[:response]]
+      end
+    )
+  end
+
   desc "version", "Show Esgob Ruby Client version"
   def version
     say "Esgob Ruby Client version #{Esgob::VERSION}"

@@ -38,7 +38,7 @@ class TestCLI < MiniTest::Unit::TestCase
     assert_match "example.com  slave\n", output
     assert_match "example.uk   slave\n", output
   end
-  
+
   def test_slaves
     register_fixture('domains.slaves.list')
 
@@ -75,6 +75,17 @@ class TestCLI < MiniTest::Unit::TestCase
 
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-update example.org 195.177.253.167]) }
     assert_match "=> domain master IP updated\n", output
+  end
+
+  def test_soacheck
+    register_fixture('domains.tools.soacheck')
+
+    output = capture(:stdout) { Esgob::CLI.start(%w[soacheck example.org]) }
+    assert_match "Identifier       Type     Country  SOA  Response\n", output
+    assert_match "----------       ----     -------  ---  --------\n", output
+    assert_match "195.177.253.167  master                 fail\n", output
+    assert_match "4f31ad80         anycast  gb            fail\n", output
+    assert_match "fgej72a1         anycast  us            fail\n", output
   end
   
   def test_version
