@@ -27,6 +27,8 @@ class Esgob::CLI < Thor
   desc "domains", "List all domains"
   def domains
     print_table(
+      [['Domain', 'Type']] +
+      [['------', '----']] +
       client.domains_list.map {|h| [h[:domain], h[:type]]}
     )
   end
@@ -34,6 +36,8 @@ class Esgob::CLI < Thor
   desc "slaves", "List slave domains"
   def slaves
     print_table(
+      [['Domain', 'Master IP']] +
+      [['------', '---------']] +
       client.domains_slaves_list.to_a
     )
   end

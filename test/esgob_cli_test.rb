@@ -33,6 +33,8 @@ class TestCLI < MiniTest::Unit::TestCase
     register_fixture('domains.list')
 
     output = capture(:stdout) { Esgob::CLI.start(%w[domains]) }
+    assert_match "Domain       Type\n", output
+    assert_match "------       ----\n", output
     assert_match "example.com  slave\n", output
     assert_match "example.uk   slave\n", output
   end
@@ -41,6 +43,8 @@ class TestCLI < MiniTest::Unit::TestCase
     register_fixture('domains.slaves.list')
 
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves]) }
+    assert_match "Domain       Master IP\n", output
+    assert_match "------       ---------\n", output
     assert_match "example.com  195.177.253.166\n", output
     assert_match "example.uk   195.177.253.166\n", output
   end
