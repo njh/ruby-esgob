@@ -104,8 +104,8 @@ private ######################################################################
   def check_action
     result = yield
     unless result[:action].nil?
-      say set_color("=> #{result[:action]}", :green, :bold)
+        say "#{result[:domain]} " + set_color("=> #{result[:action]}", :green, :bold)
+      end
     end
-  end
 
 end

@@ -11,7 +11,7 @@ class TestCLI < MiniTest::Unit::TestCase
     @client = Esgob::Client.new('acct', 'xxxx')
     Esgob::Client.stubs(:new).returns(@client)
 
-    #ENV["THOR_SHELL"] = 'Basic'
+    ENV["THOR_SHELL"] = 'Basic'
   end
 
   def teardown
@@ -53,28 +53,28 @@ class TestCLI < MiniTest::Unit::TestCase
     register_fixture('domains.slaves.add')
 
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-add example.org 195.177.253.166]) }
-    assert_match "=> domain added\n", output
+    assert_equal "example.org => domain added\n", output
   end
   
   def test_slaves_delete
     register_fixture('domains.slaves.delete')
 
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-delete example.org]) }
-    assert_match "=> domain deleted\n", output
+    assert_equal "example.org => domain deleted\n", output
   end
   
   def test_slaves_transfer
     register_fixture('domains.slaves.forcetransfer')
 
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-transfer example.org]) }
-    assert_match "=> Domain AXFR requested from master\n", output
+    assert_equal "example.org => Domain AXFR requested from master\n", output
   end
   
   def test_slaves_update
     register_fixture('domains.slaves.updatemasterip')
 
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-update example.org 195.177.253.167]) }
-    assert_match "=> domain master IP updated\n", output
+    assert_equal "example.org => domain master IP updated\n", output
   end
 
   def test_soacheck
