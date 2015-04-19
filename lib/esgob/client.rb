@@ -77,32 +77,44 @@ class Esgob::Client
 
   # Adds a new slave domain
   def domains_slaves_add(domain, masterip)
-    call('domains.slaves.add', :domain => domain, :masterip => masterip)
+    result = call('domains.slaves.add', :domain => domain, :masterip => masterip)
+    result[:domain] ||= domain
+    result
   end
 
   # Deletes a slave domain
   def domains_slaves_delete(domain)
-    call('domains.slaves.delete', :domain => domain)
+    result = call('domains.slaves.delete', :domain => domain)
+    result[:domain] ||= domain
+    result
   end
 
   # Force AXFR / transfer from master of a slave domain
   def domains_slaves_forcetransfer(domain)
-    call('domains.slaves.forcetransfer', :domain => domain)
+    result = call('domains.slaves.forcetransfer', :domain => domain)
+    result[:domain] ||= domain
+    result
   end
 
   # Updates the master IP of a slave domain
   def domains_slaves_updatemasterip(domain, masterip)
-    call('domains.slaves.updatemasterip', :domain => domain, :masterip => masterip)
+    result = call('domains.slaves.updatemasterip', :domain => domain, :masterip => masterip)
+    result[:domain] ||= domain
+    result
   end
 
   # Add a host allowed to AXFR out
   def domains_slaves_axfrout_add(domain, axfrip)
-    call('domains.slaves.axfrout.add', :domain => domain, :axfrip => axfrip)
+    result = call('domains.slaves.axfrout.add', :domain => domain, :axfrip => axfrip)
+    result[:domain] ||= domain
+    result
   end
 
   # Account	Delete a host allowed to AXFR out
   def domains_slaves_axfrout_delete(domain, axfrip)
-    call('domains.slaves.axfrout.delete', :domain => domain, :axfrip => axfrip)
+    result = call('domains.slaves.axfrout.delete', :domain => domain, :axfrip => axfrip)
+    result[:domain] ||= domain
+    result
   end
 
   # Retrieve the domain SOA serial number from the master and each anycast node

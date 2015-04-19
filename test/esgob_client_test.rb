@@ -181,7 +181,7 @@ class TestClient < MiniTest::Unit::TestCase
       '/1.0/domains.slaves.add?account=acct&domain=example.org&f=json&key=xxxx&masterip=195.177.253.166',
       FakeWeb.last_request.path
     )
-    assert_equal({:action=>"domain added"}, response)
+    assert_equal({:action=>"domain added", :domain=>"example.org"}, response)
   end
 
   def test_domains_slaves_delete
@@ -192,7 +192,7 @@ class TestClient < MiniTest::Unit::TestCase
       '/1.0/domains.slaves.delete?account=acct&domain=example.org&f=json&key=xxxx',
       FakeWeb.last_request.path
     )
-    assert_equal({:action=>"domain deleted"}, response)
+    assert_equal({:action=>"domain deleted", :domain=>"example.org"}, response)
   end
 
   def test_domains_slaves_forcetransfer
@@ -203,7 +203,7 @@ class TestClient < MiniTest::Unit::TestCase
       '/1.0/domains.slaves.forcetransfer?account=acct&domain=example.org&f=json&key=xxxx',
       FakeWeb.last_request.path
     )
-    assert_equal({:action=>"Domain AXFR requested from master"}, response)
+    assert_equal({:action=>"Domain AXFR requested from master", :domain=>"example.org"}, response)
   end
 
   def test_domains_slaves_updatemasterip
@@ -214,7 +214,7 @@ class TestClient < MiniTest::Unit::TestCase
       '/1.0/domains.slaves.updatemasterip?account=acct&domain=example.org&f=json&key=xxxx&masterip=195.177.253.167',
       FakeWeb.last_request.path
     )
-    assert_equal({:action=>"domain master IP updated"}, response)
+    assert_equal({:action=>"domain master IP updated", :domain=>"example.org"}, response)
   end
 
   def test_domains_slaves_axfrout_add
@@ -225,7 +225,7 @@ class TestClient < MiniTest::Unit::TestCase
       '/1.0/domains.slaves.axfrout.add?account=acct&axfrip=195.177.253.1&domain=example.org&f=json&key=xxxx',
       FakeWeb.last_request.path
     )
-    assert_equal({:action=>"domain AXFR out IPs updated"}, response)
+    assert_equal({:action=>"domain AXFR out IPs updated", :domain=>"example.org"}, response)
   end
 
   def test_domains_slaves_axfrout_delete
@@ -236,7 +236,7 @@ class TestClient < MiniTest::Unit::TestCase
       '/1.0/domains.slaves.axfrout.delete?account=acct&axfrip=195.177.253.1&domain=example.org&f=json&key=xxxx',
       FakeWeb.last_request.path
     )
-    assert_equal({:action=>"domain AXFR out IPs updated"}, response)
+    assert_equal({:action=>"domain AXFR out IPs updated", :domain=>"example.org"}, response)
   end
 
   def test_domains_tools_soacheck
