@@ -256,7 +256,8 @@ class TestClient < MiniTest::Unit::TestCase
       {'a.com' => '195.177.253.1', 'b.com' => '195.177.253.1'}
     )
 
-    @client.domains_slaves_sync(['a.com', 'b.com'], '195.177.253.1')
+    responses = @client.domains_slaves_sync(['a.com', 'b.com'], '195.177.253.1')
+    assert_equal [], responses 
   end
 
   def test_domains_slaves_sync_add_only
@@ -264,7 +265,11 @@ class TestClient < MiniTest::Unit::TestCase
     @client.expects(:domains_slaves_add).with('a.com', '195.177.253.1').returns({:action => "domain added"})
     @client.expects(:domains_slaves_add).with('b.com', '195.177.253.1').returns({:action => "domain added"})
 
-    @client.domains_slaves_sync(['a.com', 'b.com'], '195.177.253.1')
+    responses = @client.domains_slaves_sync(['a.com', 'b.com'], '195.177.253.1')
+    assert_equal [
+      {:action=>"domain added", :domain=>"a.com"},
+      {:action=>"domain added", :domain=>"b.com"}
+    ], responses 
   end
 
   def test_domains_slaves_sync_add_and_delete
@@ -272,7 +277,11 @@ class TestClient < MiniTest::Unit::TestCase
     @client.expects(:domains_slaves_delete).with('a.com').returns({:action => "domain deleted"})
     @client.expects(:domains_slaves_add).with('b.com', '195.177.253.1').returns({:action => "domain added"})
 
-    @client.domains_slaves_sync(['b.com'], '195.177.253.1')
+    responses = @client.domains_slaves_sync(['b.com'], '195.177.253.1')
+    assert_equal [
+      {:action=>"domain added", :domain=>"b.com"}, 
+      {:action=>"domain deleted", :domain=>"a.com"}
+    ], responses 
   end
 
   def test_domains_slaves_sync_add_and_delete_and_change_masterip
@@ -283,7 +292,12 @@ class TestClient < MiniTest::Unit::TestCase
     @client.expects(:domains_slaves_add).with('b.com', '195.177.253.1').returns({:action => "domain added"})
     @client.expects(:domains_slaves_updatemasterip).with('c.com', '195.177.253.1').returns({:action => "domain master IP updated"})
 
-    @client.domains_slaves_sync(['b.com', 'c.com'], '195.177.253.1')
+    responses = @client.domains_slaves_sync(['b.com', 'c.com'], '195.177.253.1')
+    assert_equal [
+      {:action=>"domain added", :domain=>"b.com"},
+      {:action=>"domain deleted", :domain=>"a.com"},
+      {:action=>"domain master IP updated", :domain=>"c.com"}
+    ], responses 
   end
 
   def test_inspect

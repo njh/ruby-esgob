@@ -116,9 +116,12 @@ class Esgob::Client
     existing_domains = domains_slaves_list
 
     # Add any missing domains
+    responses = []
     domains.each do |domain|
       unless existing_domains.include?(domain)
-        domains_slaves_add(domain, masterip)
+        response = domains_slaves_add(domain, masterip)
+        response[:domain] ||= domain
+        responses << response
       end
     end
 
@@ -127,13 +130,19 @@ class Esgob::Client
       if domains.include?(domain)
         # Update the masterip if it isn't correct
         if existing_domains[domain] != masterip
-          domains_slaves_updatemasterip(domain, masterip)
+          response = domains_slaves_updatemasterip(domain, masterip)
+          response[:domain] ||= domain
+          responses << response
         end
       else
         # Delete domain; not on list
-        domains_slaves_delete(domain)
+        response = domains_slaves_delete(domain)
+        response[:domain] ||= domain
+        responses << response
       end
     end
+
+    responses
   end
 
   def inspect
