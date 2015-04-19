@@ -102,10 +102,17 @@ private ######################################################################
   end
   
   def check_action
-    result = yield
+    begin
+      results = yield
+      results = [results] unless results.is_a?(Array)
+      results.each do |result|
     unless result[:action].nil?
         say "#{result[:domain]} " + set_color("=> #{result[:action]}", :green, :bold)
       end
     end
+    rescue Esgob::ServerError => err
+      $stderr.puts set_color("=> Error: #{err.message} [#{err.code}]", :red, :bold)
+    end
+  end
 
 end

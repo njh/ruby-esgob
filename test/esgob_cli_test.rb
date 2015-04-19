@@ -63,6 +63,18 @@ class TestCLI < MiniTest::Unit::TestCase
     assert_equal "example.org => domain deleted\n", output
   end
   
+  def test_slaves_delete_error
+    FakeWeb.register_uri(
+      :get, %r[^https?://api\.esgob\.com(:443)?/],
+      :status => ["403", "FORBIDDEN"],
+      :content_type => "application/json",
+      :body => read_fixture(:code_2007)
+    )
+
+    output = capture(:stderr) { Esgob::CLI.start(%w[slaves-delete example.com]) }
+    assert_equal "=> Error: Domain is not present in your account [2007]\n", output
+  end
+
   def test_slaves_transfer
     register_fixture('domains.slaves.forcetransfer')
 
