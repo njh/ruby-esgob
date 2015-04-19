@@ -1,0 +1,6 @@
+{
+    "error": {
+        "message": "Domain is not present in your account", 
+        "code": 2007
+    }
+}

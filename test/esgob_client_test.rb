@@ -99,27 +99,38 @@ class TestClient < MiniTest::Unit::TestCase
   end
 
   def test_call_with_404_error
-    assert_raises(Net::HTTPServerException) do
-      FakeWeb.register_uri(
-        :get, %r[^https?://api\.esgob\.com(:443)?/],
-        :status => ["404", "Not Found"],
-        :content_type => "application/json",
-        :body => '{}'
-      )
-      response = @client.call('accounts.get')
-    end
+    FakeWeb.register_uri(
+      :get, %r[^https?://api\.esgob\.com(:443)?/],
+      :status => ["404", "Not Found"],
+      :content_type => "application/json",
+      :body => '{}'
+    )
+    err = assert_raises(Esgob::ServerError) { @client.call('accounts.get') }
+    assert_equal 'Not Found', err.message
+    assert_equal '404', err.code
   end
 
   def test_call_with_non_json_reponse
-    assert_raises(RuntimeError) do
-      FakeWeb.register_uri(
-        :get, %r[^https?://api\.esgob\.com(:443)?/],
-        :status => ["200", "OK"],
-        :content_type => "text/plain",
-        :body => 'This is plain text'
-      )
-      response = @client.call('accounts.get')
-    end
+    FakeWeb.register_uri(
+      :get, %r[^https?://api\.esgob\.com(:443)?/],
+      :status => ["200", "OK"],
+      :content_type => "text/plain",
+      :body => 'This is plain text'
+    )
+    err = assert_raises(RuntimeError) { @client.call('accounts.get') }
+    assert_equal 'HTTP response from ESGOB is not of type JSON', err.message
+  end
+
+  def test_call_domain_not_present
+    FakeWeb.register_uri(
+      :get, %r[^https?://api\.esgob\.com(:443)?/],
+      :status => ["403", "FORBIDDEN"],
+      :content_type => "application/json",
+      :body => read_fixture(:code_2007)
+    )
+    err = assert_raises(Esgob::ServerError) { @client.call('domains.slaves.delete', :domain => 'example.org') }
+    assert_equal 'Domain is not present in your account', err.message
+    assert_equal '2007', err.code
   end
 
   def test_accounts_get
@@ -257,7 +268,7 @@ class TestClient < MiniTest::Unit::TestCase
     )
 
     responses = @client.domains_slaves_sync(['a.com', 'b.com'], '195.177.253.1')
-    assert_equal [], responses 
+    assert_equal [], responses
   end
 
   def test_domains_slaves_sync_add_only
@@ -269,7 +280,7 @@ class TestClient < MiniTest::Unit::TestCase
     assert_equal [
       {:action=>"domain added", :domain=>"a.com"},
       {:action=>"domain added", :domain=>"b.com"}
-    ], responses 
+    ], responses
   end
 
   def test_domains_slaves_sync_add_and_delete
@@ -279,9 +290,9 @@ class TestClient < MiniTest::Unit::TestCase
 
     responses = @client.domains_slaves_sync(['b.com'], '195.177.253.1')
     assert_equal [
-      {:action=>"domain added", :domain=>"b.com"}, 
+      {:action=>"domain added", :domain=>"b.com"},
       {:action=>"domain deleted", :domain=>"a.com"}
-    ], responses 
+    ], responses
   end
 
   def test_domains_slaves_sync_add_and_delete_and_change_masterip
@@ -297,7 +308,7 @@ class TestClient < MiniTest::Unit::TestCase
       {:action=>"domain added", :domain=>"b.com"},
       {:action=>"domain deleted", :domain=>"a.com"},
       {:action=>"domain master IP updated", :domain=>"c.com"}
-    ], responses 
+    ], responses
   end
 
   def test_inspect

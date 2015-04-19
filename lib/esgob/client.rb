@@ -40,17 +40,21 @@ class Esgob::Client
       http.request(req)
     end
 
-    if res.code =~ /^2/
-      if res.content_type == 'application/json'
-        symbolize_keys! JSON.parse(res.body)
+    if res.content_type == 'application/json'
+      data = symbolize_keys! JSON.parse(res.body)
+      if data.has_key?(:error)
+        raise Esgob::ServerError.new(
+          data[:error][:message],
+          data[:error][:code].to_s
+        )
+      elsif res.code !~ /^2/
+        raise Esgob::ServerError.new(res.message, res.code)
       else
-       raise "HTTP response from ESGOB is not of type JSON"
+        return data
       end
     else
-      # The badly named method throws an Net::HTTP exception
-      res.value
+      raise "HTTP response from ESGOB is not of type JSON"
     end
-
   end
 
   # Return account status; credit balance, etc
