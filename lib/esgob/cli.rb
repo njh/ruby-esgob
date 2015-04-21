@@ -72,6 +72,19 @@ class Esgob::CLI < Thor
     end
   end
 
+  desc "slaves-sync FILE MASTERIP",
+       "Synronises list of slave domains in a file"
+  def slaves_sync(filename, masterip)
+    domains = []
+    File.foreach(filename) do |line|
+      domains << line.strip.split(/\s+/).first
+    end
+
+    check_action do
+      client.domains_slaves_sync(domains, masterip)
+    end
+  end
+
   desc "soacheck DOMAIN",
        "Fetch domain SOA serial number for all nodes"
   def soacheck(domain)

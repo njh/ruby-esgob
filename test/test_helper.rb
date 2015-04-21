@@ -13,9 +13,14 @@ end
 FakeWeb.allow_net_connect = false
 
 
+def fixture_path(fixture_name)
+  fixture_name = fixture_name.to_s
+  fixture_name += '.json' unless fixture_name.match(/\.\w+$/)
+  File.join(File.dirname(__FILE__), 'fixtures', fixture_name)
+end
+
 def read_fixture(fixture_name)
-  fixture_file = File.join(File.dirname(__FILE__), 'fixtures', "#{fixture_name}.json")
-  File.read(fixture_file)
+  File.read fixture_path(fixture_name)
 end
 
 def register_fixture(api_call, fixture_name=nil)

@@ -19,7 +19,7 @@ class TestCLI < MiniTest::Unit::TestCase
     ENV.delete('ESGOB_ACCOUNT')
     ENV.delete('ESGOB_API_KEY')
   end
-  
+
   def test_account
     register_fixture('accounts.get')
 
@@ -28,7 +28,7 @@ class TestCLI < MiniTest::Unit::TestCase
     assert_match "    name: Person Name\n", output
     assert_match " credits: 48\n", output
   end
-  
+
   def test_domains
     register_fixture('domains.list')
 
@@ -55,14 +55,14 @@ class TestCLI < MiniTest::Unit::TestCase
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-add example.org 195.177.253.166]) }
     assert_equal "example.org => domain added\n", output
   end
-  
+
   def test_slaves_delete
     register_fixture('domains.slaves.delete')
 
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-delete example.org]) }
     assert_equal "example.org => domain deleted\n", output
   end
-  
+
   def test_slaves_delete_error
     FakeWeb.register_uri(
       :get, %r[^https?://api\.esgob\.com(:443)?/],
@@ -81,12 +81,22 @@ class TestCLI < MiniTest::Unit::TestCase
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-transfer example.org]) }
     assert_equal "example.org => Domain AXFR requested from master\n", output
   end
-  
+
   def test_slaves_update
     register_fixture('domains.slaves.updatemasterip')
 
     output = capture(:stdout) { Esgob::CLI.start(%w[slaves-update example.org 195.177.253.167]) }
     assert_equal "example.org => domain master IP updated\n", output
+  end
+
+  def test_slaves_sync
+    @client.expects(:domains_slaves_list).with().returns({'a.com' => '195.177.253.169', 'b.com' => '195.177.253.169'})
+    @client.expects(:domains_slaves_delete).with('a.com').returns({:action => "domain deleted"})
+    @client.expects(:domains_slaves_add).with('c.com', '195.177.253.169').returns({:action => "domain added"})
+
+    output = capture(:stdout) { Esgob::CLI.start(['slaves-sync', fixture_path('sync-domain-list.txt'), '195.177.253.169']) }
+    assert_match "a.com => domain deleted\n", output
+    assert_match "c.com => domain added\n", output
   end
 
   def test_soacheck
@@ -99,7 +109,7 @@ class TestCLI < MiniTest::Unit::TestCase
     assert_match "4f31ad80         anycast  gb            fail\n", output
     assert_match "fgej72a1         anycast  us            fail\n", output
   end
-  
+
   def test_version
     assert_match /Esgob Ruby Client version \d+.\d+\.\d+/,
       capture(:stdout) { Esgob::CLI.start(%w[version]) }
