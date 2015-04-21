@@ -142,7 +142,7 @@ class Esgob::Client
     end
 
     # Now check the existing domains
-    existing_domains.keys.each do |domain|
+    existing_domains.keys.sort.each do |domain|
       if domains.include?(domain)
         # Update the masterip if it isn't correct
         if existing_domains[domain] != masterip
