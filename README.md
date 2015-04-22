@@ -52,12 +52,12 @@ Here is an example of what can be done in an IRB session:
 
     $ irb -resgob
     irb(main):001:0> esgob = Esgob::Client.new
-    => #<Esgob::Client:0x007fd2e3b13420>
+    => #<Esgob::Client account=myacct>
     irb(main):002:0> esgob.domains_slaves_list
     => {"example.com"=>"192.168.0.1", "example.uk"=>"192.168.0.1"}
     irb(main):003:0> esgob.domains_slaves_list.keys
     => ["example.com", "example.uk"]
-    irb(main):004:0> 
+    irb(main):004:0>
 
 See the [API documentation] for full details.
 
