@@ -19,27 +19,33 @@ class Esgob::CLI < Thor
 
   desc "account", "Display account info"
   def account
-    client.accounts_get.each_pair do |k,v|
-      say sprintf("%8s: %s\n", k, v)
+    rescue_error do
+      client.accounts_get.each_pair do |k,v|
+        say sprintf("%8s: %s\n", k, v)
+      end
     end
   end
 
   desc "domains", "List all domains"
   def domains
-    print_table(
-      [['Domain', 'Type']] +
-      [['------', '----']] +
-      client.domains_list.map {|h| [h[:domain], h[:type]]}
-    )
+    rescue_error do
+      print_table(
+        [['Domain', 'Type']] +
+        [['------', '----']] +
+        client.domains_list.map {|h| [h[:domain], h[:type]]}
+      )
+    end
   end
 
   desc "slaves", "List slave domains"
   def slaves
-    print_table(
-      [['Domain', 'Master IP']] +
-      [['------', '---------']] +
-      client.domains_slaves_list.to_a
-    )
+    rescue_error do
+      print_table(
+        [['Domain', 'Master IP']] +
+        [['------', '---------']] +
+        client.domains_slaves_list.to_a
+      )
+    end
   end
 
   desc "slaves-add DOMAIN MASTERIP", "Add new slave domain"
@@ -88,17 +94,19 @@ class Esgob::CLI < Thor
   desc "soacheck DOMAIN",
        "Fetch domain SOA serial number for all nodes"
   def soacheck(domain)
-    response = client.domains_tools_soacheck(domain)
-    print_table(
-      [['Identifier', 'Type', 'Country', 'SOA', 'Response']] +
-      [['----------', '----', '-------', '---', '--------']] +
-      response[:responses][:masters].map do |node|
-        [node[:ip], "master", '', node[:soa], node[:response]]
-      end + 
-      response[:responses][:anycastnodes].map do |node|
-        [node[:ref], 'anycast', node[:country], node[:soa], node[:response]]
-      end
-    )
+    rescue_error do
+      response = client.domains_tools_soacheck(domain)
+      print_table(
+        [['Identifier', 'Type', 'Country', 'SOA', 'Response']] +
+        [['----------', '----', '-------', '---', '--------']] +
+        response[:responses][:masters].map do |node|
+          [node[:ip], "master", '', node[:soa], node[:response]]
+        end +
+        response[:responses][:anycastnodes].map do |node|
+          [node[:ref], 'anycast', node[:country], node[:soa], node[:response]]
+        end
+      )
+    end
   end
 
   desc "version", "Show Esgob Ruby Client version"
@@ -107,24 +115,31 @@ class Esgob::CLI < Thor
   end
   map "--version" => "version"
 
-
 private ######################################################################
 
   def client
     @client ||= Esgob::Client.new(options[:account], options[:key])
   end
-  
-  def check_action
+
+  # FIXME: there must be a better way to do this, rather than wrap
+  # each command in this block individually
+  def rescue_error
     begin
+      yield
+    rescue Esgob::ServerError => err
+      $stderr.puts set_color("=> Error: #{err.message} [#{err.code}]", :red, :bold)
+    end
+  end
+
+  def check_action
+    rescue_error do
       results = yield
       results = [results] unless results.is_a?(Array)
       results.each do |result|
-    unless result[:action].nil?
-        say "#{result[:domain]} " + set_color("=> #{result[:action]}", :green, :bold)
+        unless result[:action].nil?
+          say "#{result[:domain]} " + set_color("=> #{result[:action]}", :green, :bold)
+        end
       end
-    end
-    rescue Esgob::ServerError => err
-      $stderr.puts set_color("=> Error: #{err.message} [#{err.code}]", :red, :bold)
     end
   end
 

@@ -1,0 +1,6 @@
+{
+    "error": {
+        "message": "Account and API key combination not valid", 
+        "code": 1003
+    }
+}

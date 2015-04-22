@@ -29,6 +29,18 @@ class TestCLI < MiniTest::Unit::TestCase
     assert_match " credits: 48\n", output
   end
 
+  def test_account_error
+    FakeWeb.register_uri(
+      :get, %r[^https?://api\.esgob\.com(:443)?/],
+      :status => ["401", "UNAUTHORIZED"],
+      :content_type => "application/json",
+      :body => read_fixture(:code_1003)
+    )
+
+    output = capture(:stderr) { Esgob::CLI.start(%w[account]) }
+    assert_equal "=> Error: Account and API key combination not valid [1003]\n", output
+  end
+
   def test_domains
     register_fixture('domains.list')
 
