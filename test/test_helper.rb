@@ -12,7 +12,6 @@ end
 
 FakeWeb.allow_net_connect = false
 
-
 def fixture_path(fixture_name)
   fixture_name = fixture_name.to_s
   fixture_name += '.json' unless fixture_name.match(/\.\w+$/)
@@ -23,7 +22,7 @@ def read_fixture(fixture_name)
   File.read fixture_path(fixture_name)
 end
 
-def register_fixture(api_call, fixture_name=nil)
+def register_fixture(api_call, fixture_name = nil)
   if fixture_name.nil?
     fixture_name = api_call.gsub(/\W+/, '_')
   end

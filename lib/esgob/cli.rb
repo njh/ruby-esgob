@@ -16,11 +16,10 @@ class Esgob::CLI < Thor
                :default => false,
                :aliases => '-v'
 
-
   desc "account", "Display account info"
   def account
     rescue_error do
-      client.accounts_get.each_pair do |k,v|
+      client.accounts_get.each_pair do |k, v|
         say sprintf("%8s: %s\n", k, v)
       end
     end
@@ -32,7 +31,7 @@ class Esgob::CLI < Thor
       print_table(
         [['Domain', 'Type']] +
         [['------', '----']] +
-        client.domains_list.map {|h| [h[:domain], h[:type]]}
+        client.domains_list.map { |h| [h[:domain], h[:type]] }
       )
     end
   end
@@ -115,7 +114,7 @@ class Esgob::CLI < Thor
   end
   map "--version" => "version"
 
-private ######################################################################
+  private ######################################################################
 
   def client
     @client ||= Esgob::Client.new(options[:account], options[:key])
@@ -124,11 +123,9 @@ private ######################################################################
   # FIXME: there must be a better way to do this, rather than wrap
   # each command in this block individually
   def rescue_error
-    begin
-      yield
-    rescue Esgob::ServerError => err
-      $stderr.puts set_color("=> Error: #{err.message} [#{err.code}]", :red, :bold)
-    end
+    yield
+  rescue Esgob::ServerError => err
+    $stderr.puts set_color("=> Error: #{err.message} [#{err.code}]", :red, :bold)
   end
 
   def check_action
@@ -142,5 +139,4 @@ private ######################################################################
       end
     end
   end
-
 end

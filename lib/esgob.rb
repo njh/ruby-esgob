@@ -6,10 +6,9 @@ module Esgob
   class ServerError < StandardError
     attr_reader :code
 
-    def initialize(message, code=nil)
+    def initialize(message, code = nil)
       super message
       @code = code
     end
   end
-
 end

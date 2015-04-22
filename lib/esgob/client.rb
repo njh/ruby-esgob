@@ -10,15 +10,15 @@ class Esgob::Client
   DEFAULT_API_ENDPOINT = "https://api.esgob.com/1.0/".freeze
 
   def initialize(*args)
-    if args.first.kind_of?(Hash)
-      args.first.each_pair { |k,v| send("#{k}=", v) }
+    if args.first.is_a?(Hash)
+      args.first.each_pair { |k, v| send("#{k}=", v) }
     else
       self.account = args[0]
       self.api_key = args[1]
     end
 
-    self.account  ||= ENV['ESGOB_ACCOUNT']
-    self.api_key  ||= ENV['ESGOB_API_KEY']
+    self.account ||= ENV['ESGOB_ACCOUNT']
+    self.api_key ||= ENV['ESGOB_API_KEY']
     self.endpoint ||= DEFAULT_API_ENDPOINT
 
     if account.nil? or account.empty?
@@ -30,7 +30,7 @@ class Esgob::Client
     end
   end
 
-  def call(function_name, arguments={})
+  def call(function_name, arguments = {})
     uri = URI(endpoint + function_name)
     uri.query = build_query(default_arguments.merge(arguments))
 
@@ -42,7 +42,7 @@ class Esgob::Client
 
     if res.content_type == 'application/json'
       data = symbolize_keys! JSON.parse(res.body)
-      if data.has_key?(:error)
+      if data.key?(:error)
         raise Esgob::ServerError.new(
           data[:error][:message],
           data[:error][:code].to_s
@@ -175,10 +175,10 @@ class Esgob::Client
         when Hash
           symbolize_keys!(hash[ks])
         when Array
-          hash[ks].each {|item| symbolize_keys!(item) if item.kind_of?(Hash)}
+          hash[ks].each { |item| symbolize_keys!(item) if item.is_a?(Hash) }
       end
     end
-    return hash
+    hash
   end
 
   def default_arguments
@@ -190,8 +190,8 @@ class Esgob::Client
   end
 
   def build_query(hash)
-    hash.keys.sort{|a,b| a.to_s <=> b.to_s}.map { |key|
-      URI::escape(key.to_s) + '=' + URI::escape(hash[key].to_s)
-    }.join('&')
+    hash.keys.sort { |a, b| a.to_s <=> b.to_s }.map do |key|
+      URI.escape(key.to_s) + '=' + URI.escape(hash[key].to_s)
+    end.join('&')
   end
 end
