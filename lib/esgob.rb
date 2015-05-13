@@ -1,5 +1,6 @@
 module Esgob
   autoload :Client,   'esgob/client'
+  autoload :Config,   'esgob/config'
   autoload :CLI,      'esgob/cli'
   autoload :VERSION,  'esgob/version'
 
