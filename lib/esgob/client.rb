@@ -8,14 +8,14 @@ class Esgob::Client
   # @return [String]
   attr_accessor :account
   # @return [String]
-  attr_accessor :api_key
+  attr_accessor :key
 
   DEFAULT_API_ENDPOINT = "https://api.esgob.com/1.0/".freeze
 
   # Create a new Esgob Client instance.
   #
   # @overload initialize
-  #   Create a new client, using the ESGOB_ACCOUNT and ESGOB_API_KEY environment variables.
+  #   Create a new client, using the ESGOB_ACCOUNT and ESGOB_KEY environment variables.
   # @overload initialize(account, key)
   #   @param [String] account
   #   @param [String] key
@@ -23,7 +23,7 @@ class Esgob::Client
   #   @param [Hash] options 
   #   @option options [String] :endpoint The URI of the API endpoint
   #   @option options [String] :account The account name
-  #   @option options [String] :api_key The API key
+  #   @option options [String] :key The API key
   # @return [Esgob::Client] A new client instance.
   # @example
   #   client = Esgob::Client.new('account', 'key')
@@ -32,18 +32,18 @@ class Esgob::Client
       args.first.each_pair { |k, v| send("#{k}=", v) }
     else
       self.account = args[0]
-      self.api_key = args[1]
+      self.key = args[1]
     end
 
     self.account ||= ENV['ESGOB_ACCOUNT']
-    self.api_key ||= ENV['ESGOB_API_KEY']
+    self.key ||= ENV['ESGOB_KEY']
     self.endpoint ||= DEFAULT_API_ENDPOINT
 
     if account.nil? or account.empty?
       raise(ArgumentError, "No account name configured for Esgob")
     end
 
-    if api_key.nil? or api_key.empty?
+    if key.nil? or key.empty?
       raise(ArgumentError, "No API key configured for Esgob")
     end
   end
@@ -232,7 +232,7 @@ class Esgob::Client
   def default_arguments
     {
       :account => account,
-      :key => api_key,
+      :key => key,
       :f => 'json'
     }
   end

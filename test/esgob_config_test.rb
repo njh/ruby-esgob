@@ -7,7 +7,7 @@ class TestConfig < MiniTest::Unit::TestCase
   def teardown
     # Reset environment variables after each test
     ENV.delete('ESGOB_ACCOUNT')
-    ENV.delete('ESGOB_API_KEY')
+    ENV.delete('ESGOB_KEY')
   end
 
   def test_file_paths

@@ -33,7 +33,7 @@ First create a new client instance, by passing in your account name and API key:
 Alternatively, as it is often desirable to keep secrets outside of the source code, it is also possible to pass in the account name and API key using environment variables set in the shell:
 
     export ESGOB_ACCOUNT=accountname
-    export ESGOB_API_KEY=4472ed80e0f511e4aee13c0754043581
+    export ESGOB_KEY=4472ed80e0f511e4aee13c0754043581
 
 The client instance can then be initialised without passing any arguments:
 
