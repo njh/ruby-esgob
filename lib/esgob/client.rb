@@ -15,7 +15,8 @@ class Esgob::Client
   # Create a new Esgob Client instance.
   #
   # @overload initialize
-  #   Create a new client, using the ESGOB_ACCOUNT and ESGOB_KEY environment variables.
+  #   Create a new client, using one of the default configuration files.
+  #   Or the ESGOB_ACCOUNT and ESGOB_KEY environment variables.
   # @overload initialize(account, key)
   #   @param [String] account
   #   @param [String] key
@@ -28,15 +29,25 @@ class Esgob::Client
   # @example
   #   client = Esgob::Client.new('account', 'key')
   def initialize(*args)
-    if args.first.is_a?(Hash)
-      args.first.each_pair { |k, v| send("#{k}=", v) }
-    else
-      self.account = args[0]
-      self.key = args[1]
+    # Load configuration from file is no arguments were given
+    if args.empty?
+      config = Esgob::Config.load
+      if config.nil?
+        raise "Unable to load Esgob configuration file."
+      end
+      args = [config]
     end
 
-    self.account ||= ENV['ESGOB_ACCOUNT']
-    self.key ||= ENV['ESGOB_KEY']
+    if args.first.is_a?(Esgob::Config) or args.first.is_a?(Hash)
+      args.first.each_pair { |k, v| send("#{k}=", v) }
+    elsif args.length == 2
+      self.account = args[0]
+      self.key = args[1]
+    else
+      raise(ArgumentError, "Unsupported arguments for creating Esgob::Client")
+    end
+
+    # Set the default API endpoint if none has been set
     self.endpoint ||= DEFAULT_API_ENDPOINT
 
     if account.nil? or account.empty?

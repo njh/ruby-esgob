@@ -5,7 +5,9 @@ require 'esgob'
 
 class TestClient < MiniTest::Unit::TestCase
   def setup
-    # Run before each test
+    # Clear environment variables before each test
+    ENV.delete('ESGOB_ACCOUNT')
+    ENV.delete('ESGOB_KEY')
     FakeWeb.clean_registry
     @client = Esgob::Client.new('acct', 'xxxx')
   end
@@ -44,18 +46,43 @@ class TestClient < MiniTest::Unit::TestCase
     assert_equal 'http://api.example.com/', client.endpoint
   end
 
+  def test_new_client_using_config
+    config = Esgob::Config.new(
+      :account => 'confacct',
+      :key => 'confkey'
+    )
+    client = Esgob::Client.new(config)
+    assert_equal 'confacct', client.account
+    assert_equal 'confkey', client.key
+  end
+
+  def test_new_client_with_no_config_files
+    Esgob::Config.expects(:file_paths).with().returns([])
+    err = assert_raises(RuntimeError) { Esgob::Client.new }
+    assert_equal 'Unable to load Esgob configuration file.', err.message
+  end
+
   def test_new_client_with_no_account
     ENV.delete('ESGOB_ACCOUNT')
-    assert_raises(ArgumentError) do
+    err = assert_raises(ArgumentError) do
       Esgob::Client.new(nil, 'mykey')
     end
+    assert_equal 'No account name configured for Esgob', err.message
   end
 
   def test_new_client_with_no_key
     ENV.delete('ESGOB_KEY')
-    assert_raises(ArgumentError) do
+    err = assert_raises(ArgumentError) do
       Esgob::Client.new('acct', nil)
     end
+    assert_equal 'No API key configured for Esgob', err.message
+  end
+
+  def test_new_client_unsupported_arguments
+    err = assert_raises(ArgumentError) do
+      Esgob::Client.new(1, 2, 3, 4)
+    end
+    assert_equal 'Unsupported arguments for creating Esgob::Client', err.message
   end
 
   def test_call_with_no_parameters
