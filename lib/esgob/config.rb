@@ -58,9 +58,17 @@ class Esgob::Config
     filepath = file_paths.first if filepath.nil?
   
     File.open(filepath, 'wb') do |file|
-      instance_variables.sort.each do |var|
-        file.puts "#{var.to_s.sub(/^@/,'')} #{instance_variable_get(var)}"
+      each_pair do |key,value|
+        file.puts "#{key} #{value}"
       end
+    end
+  end
+
+  # Calls block once for each configuration key value pair,
+  # passing the key and value as parameters.
+  def each_pair
+    instance_variables.sort.each do |var|
+      yield(var.to_s.sub(/^@/,''), instance_variable_get(var))
     end
   end
 

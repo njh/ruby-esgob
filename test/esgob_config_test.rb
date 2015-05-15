@@ -75,6 +75,13 @@ class TestConfig < MiniTest::Unit::TestCase
     assert_nil(conf)
   end
 
+  def test_each_pair
+    conf = Esgob::Config.new(:key => 'xyz', :account => 'abc')
+    array = []
+    conf.each_pair { |k, v| array << "#{k}=#{v}" }
+    assert_equal(["account=abc", "key=xyz"], array)
+  end
+
   def test_save_config
     tempfile = Tempfile.new('esgob-config-test')
     tempfile.close
