@@ -4,10 +4,23 @@ require 'test_helper'
 require 'esgob'
 
 class TestConfig < MiniTest::Unit::TestCase
+  def setup
+    # Clear environment variables before each test
+    ENV.delete('ESGOB_ACCOUNT')
+    ENV.delete('ESGOB_KEY')
+  end
+
   def teardown
     # Reset environment variables after each test
     ENV.delete('ESGOB_ACCOUNT')
     ENV.delete('ESGOB_KEY')
+  end
+
+  def test_new
+    conf = Esgob::Config.new(:account => 'acct', :key => 'xyz')
+    assert_instance_of(Esgob::Config, conf)
+    assert_equal('acct', conf.account)
+    assert_equal('xyz', conf.key)
   end
 
   def test_file_paths
@@ -21,6 +34,45 @@ class TestConfig < MiniTest::Unit::TestCase
     conf = Esgob::Config.new
     assert_instance_of(Array, conf.file_paths)
     assert_includes(conf.file_paths, '/etc/esgob')
+  end
+
+  def test_load_from_env
+    ENV['ESGOB_ACCOUNT'] = 'envacct'
+    ENV['ESGOB_KEY'] = 'envkey'
+    conf = Esgob::Config.load
+    assert_instance_of(Esgob::Config, conf)
+    assert_equal('envacct', conf.account)
+    assert_equal('envkey', conf.key)
+  end
+
+  def test_load_from_specific_file
+    conf = Esgob::Config.load(fixture_path('config.txt'))
+    assert_instance_of(Esgob::Config, conf)
+    assert_equal('fileacct', conf.account)
+    assert_equal('filekey', conf.key)
+  end
+
+  def test_load_from_default_files
+    Esgob::Config.expects(:file_paths).with().returns([
+      '/doesnt/exist/shuuKee6',
+      '/doesnt/exist/ebah4kiH',
+      fixture_path('config.txt'),
+      '/doesnt/exist/Va5cu9en',
+    ])
+
+    conf = Esgob::Config.load
+    assert_instance_of(Esgob::Config, conf)
+    assert_equal('fileacct', conf.account)
+    assert_equal('filekey', conf.key)
+  end
+
+  def test_load_unavailable
+    Esgob::Config.expects(:file_paths).with().returns([
+      '/doesnt/exist/shuuKee6'
+    ])
+
+    conf = Esgob::Config.load
+    assert_nil(conf)
   end
 
   def test_save_config
