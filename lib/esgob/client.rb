@@ -3,14 +3,9 @@ require "uri"
 require "json"
 
 class Esgob::Client
-  # @return [String]
-  attr_accessor :endpoint
-  # @return [String]
-  attr_accessor :account
-  # @return [String]
-  attr_accessor :key
-
-  DEFAULT_API_ENDPOINT = "https://api.esgob.com/1.0/".freeze
+  # Esgob configuration, used to store account name and key
+  # @return [Esgob::Config]
+  attr_reader :config
 
   # Create a new Esgob Client instance.
   #
@@ -25,36 +20,34 @@ class Esgob::Client
   #   @option options [String] :endpoint The URI of the API endpoint
   #   @option options [String] :account The account name
   #   @option options [String] :key The API key
+  # @overload initialize(config)
+  #   @param [Esgob::Config] config
   # @return [Esgob::Client] A new client instance.
   # @example
   #   client = Esgob::Client.new('account', 'key')
   def initialize(*args)
-    # Load configuration from file is no arguments were given
     if args.empty?
-      config = Esgob::Config.load
-      if config.nil?
-        raise "Unable to load Esgob configuration file."
-      end
-      args = [config]
-    end
-
-    if args.first.is_a?(Esgob::Config) or args.first.is_a?(Hash)
-      args.first.each_pair { |k, v| send("#{k}=", v) }
+      # Load configuration from file if no arguments were given
+      @config = Esgob::Config.load
+    elsif args.first.is_a?(Esgob::Config) 
+      @config = args.first
+    elsif args.first.is_a?(Hash)
+      @config = Esgob::Config.new(args.first)
     elsif args.length == 2
-      self.account = args[0]
-      self.key = args[1]
+      @config = Esgob::Config.new(:account => args[0], :key => args[1])
     else
       raise(ArgumentError, "Unsupported arguments for creating Esgob::Client")
     end
 
-    # Set the default API endpoint if none has been set
-    self.endpoint ||= DEFAULT_API_ENDPOINT
+    if config.nil?
+      raise "Unable to load Esgob configuration"
+    end
 
-    if account.nil? or account.empty?
+    if config.account.nil? or config.account.empty?
       raise(ArgumentError, "No account name configured for Esgob")
     end
 
-    if key.nil? or key.empty?
+    if config.key.nil? or config.key.empty?
       raise(ArgumentError, "No API key configured for Esgob")
     end
   end
@@ -66,7 +59,7 @@ class Esgob::Client
   # @return [Hash] The response from the Esgob service, with symbols as keys.
   # @example client.call('domains.slaves.add', :domain => 'example.com', :masterip => '192.168.0.1')
   def call(function_name, args = {})
-    uri = URI(endpoint + function_name)
+    uri = URI(config.endpoint + function_name)
     uri.query = build_query(default_arguments.merge(args))
 
     res = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
@@ -221,7 +214,7 @@ class Esgob::Client
 
   # @return [String]
   def inspect
-    "\#<#{self.class} account=#{@account}>"
+    "\#<#{self.class} account=#{config.account}>"
   end
 
   protected
@@ -242,8 +235,8 @@ class Esgob::Client
 
   def default_arguments
     {
-      :account => account,
-      :key => key,
+      :account => config.account,
+      :key => config.key,
       :f => 'json'
     }
   end

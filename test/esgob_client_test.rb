@@ -23,16 +23,16 @@ class TestClient < MiniTest::Unit::TestCase
     ENV['ESGOB_KEY'] = 'envkey'
 
     client = Esgob::Client.new
-    assert_equal 'envacct', client.account
-    assert_equal 'envkey', client.key
-    assert_equal 'https://api.esgob.com/1.0/', client.endpoint
+    assert_equal 'envacct', client.config.account
+    assert_equal 'envkey', client.config.key
+    assert_equal 'https://api.esgob.com/1.0/', client.config.endpoint
   end
 
   def test_new_client_using_arguments
     client = Esgob::Client.new('foobar', 'mykey')
-    assert_equal 'foobar', client.account
-    assert_equal 'mykey', client.key
-    assert_equal 'https://api.esgob.com/1.0/', client.endpoint
+    assert_equal 'foobar', client.config.account
+    assert_equal 'mykey', client.config.key
+    assert_equal 'https://api.esgob.com/1.0/', client.config.endpoint
   end
 
   def test_new_client_using_hash
@@ -41,9 +41,9 @@ class TestClient < MiniTest::Unit::TestCase
       :key => 'hashkey',
       :endpoint => 'http://api.example.com/'
     )
-    assert_equal 'hashacct', client.account
-    assert_equal 'hashkey', client.key
-    assert_equal 'http://api.example.com/', client.endpoint
+    assert_equal 'hashacct', client.config.account
+    assert_equal 'hashkey', client.config.key
+    assert_equal 'http://api.example.com/', client.config.endpoint
   end
 
   def test_new_client_using_config
@@ -52,14 +52,14 @@ class TestClient < MiniTest::Unit::TestCase
       :key => 'confkey'
     )
     client = Esgob::Client.new(config)
-    assert_equal 'confacct', client.account
-    assert_equal 'confkey', client.key
+    assert_equal 'confacct', client.config.account
+    assert_equal 'confkey', client.config.key
   end
 
   def test_new_client_with_no_config_files
     Esgob::Config.expects(:file_paths).with().returns([])
     err = assert_raises(RuntimeError) { Esgob::Client.new }
-    assert_equal 'Unable to load Esgob configuration file.', err.message
+    assert_equal 'Unable to load Esgob configuration', err.message
   end
 
   def test_new_client_with_no_account
