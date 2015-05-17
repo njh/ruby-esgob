@@ -1,14 +1,23 @@
 class Esgob::Config
   # @return [String]
+  attr_accessor :endpoint
+  # @return [String]
   attr_accessor :account
   # @return [String]
   attr_accessor :key
 
-  # @param [Hash] args 
+  DEFAULT_API_ENDPOINT = "https://api.esgob.com/1.0/".freeze
+
+  # @param [Hash] args
   # @option args [String] :account The account name
   # @option args [String] :key The API key
   def initialize(args={})
     args.each_pair { |k, v| send("#{k}=", v) }
+  end
+
+  def endpoint
+    # Use default endpoint if none configured
+    @endpoint || DEFAULT_API_ENDPOINT
   end
 
   # Get an ordered list of paths to possible Esgob configuration files
@@ -20,14 +29,14 @@ class Esgob::Config
       '/usr/local/etc/esgob'
     ]
   end
-  
+
   # Get an ordered list of paths to possible Esgob configuration files
   # @return [Array<String>] Array of file paths
   def file_paths
     self.class.file_paths
   end
-  
-  # Try and read Esgob configuration either from 
+
+  # Try and read Esgob configuration either from
   # Environment variables or one of the config files
   # @param [String] filepath Optional path to a configuration file
   # @return Esgob::Config
@@ -56,7 +65,7 @@ class Esgob::Config
   # @param [String] filepath Optional path to a configuration file
   def save(filepath=nil)
     filepath = file_paths.first if filepath.nil?
-  
+
     File.open(filepath, 'wb') do |file|
       each_pair do |key,value|
         file.puts "#{key} #{value}"
@@ -74,7 +83,7 @@ class Esgob::Config
 
 
   protected
-  
+
   def self.load_file(filepath)
     config = self.new
 

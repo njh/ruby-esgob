@@ -23,6 +23,14 @@ class TestConfig < MiniTest::Unit::TestCase
     assert_equal('xyz', conf.key)
   end
 
+  def test_default_values
+    conf = Esgob::Config.new
+    assert_instance_of(Esgob::Config, conf)
+    assert_equal(nil, conf.account)
+    assert_equal('https://api.esgob.com/1.0/', conf.endpoint)
+    assert_equal(nil, conf.key)
+  end
+
   def test_file_paths
     ENV['HOME'] = '/home/bob'
     assert_instance_of(Array, Esgob::Config.file_paths)
@@ -91,7 +99,31 @@ class TestConfig < MiniTest::Unit::TestCase
     config.key = 'k'
     config.save(tempfile.path)
 
-    assert_equal("account a\nkey k\n", tempfile.open.read)
+    assert_equal(
+      "account a\n"+
+      "key k\n",
+      tempfile.open.read
+    )
+
+    tempfile.unlink
+  end
+
+  def test_save_config_with_custom_endpoint
+    tempfile = Tempfile.new('esgob-config-test')
+    tempfile.close
+
+    config = Esgob::Config.new
+    config.account = 'a'
+    config.key = 'k'
+    config.endpoint = 'http://esgob.example.com/'
+    config.save(tempfile.path)
+
+    assert_equal(
+      "account a\n"+
+      "endpoint http://esgob.example.com/\n"+
+      "key k\n",
+      tempfile.open.read
+    )
 
     tempfile.unlink
   end
