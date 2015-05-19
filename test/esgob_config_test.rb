@@ -31,17 +31,11 @@ class TestConfig < MiniTest::Unit::TestCase
     assert_equal(nil, conf.key)
   end
 
-  def test_file_paths
+  def test_default_filepaths
     ENV['HOME'] = '/home/bob'
-    assert_instance_of(Array, Esgob::Config.file_paths)
-    assert_includes(Esgob::Config.file_paths, '/home/bob/.esgob')
-    assert_includes(Esgob::Config.file_paths, '/etc/esgob')
-  end
-
-  def test_instance_file_paths
-    conf = Esgob::Config.new
-    assert_instance_of(Array, conf.file_paths)
-    assert_includes(conf.file_paths, '/etc/esgob')
+    assert_instance_of(Array, Esgob::Config.default_filepaths)
+    assert_includes(Esgob::Config.default_filepaths, '/home/bob/.esgob')
+    assert_includes(Esgob::Config.default_filepaths, '/etc/esgob')
   end
 
   def test_load_from_env
@@ -51,6 +45,7 @@ class TestConfig < MiniTest::Unit::TestCase
     assert_instance_of(Esgob::Config, conf)
     assert_equal('envacct', conf.account)
     assert_equal('envkey', conf.key)
+    assert_equal(nil, conf.filepath)
   end
 
   def test_load_from_specific_file
@@ -58,10 +53,11 @@ class TestConfig < MiniTest::Unit::TestCase
     assert_instance_of(Esgob::Config, conf)
     assert_equal('fileacct', conf.account)
     assert_equal('filekey', conf.key)
+    assert_match(/test\/fixtures\/config\.txt$/, conf.filepath)
   end
 
   def test_load_from_default_files
-    Esgob::Config.expects(:file_paths).with().returns([
+    Esgob::Config.expects(:default_filepaths).with().returns([
       '/doesnt/exist/shuuKee6',
       '/doesnt/exist/ebah4kiH',
       fixture_path('config.txt'),
@@ -72,10 +68,11 @@ class TestConfig < MiniTest::Unit::TestCase
     assert_instance_of(Esgob::Config, conf)
     assert_equal('fileacct', conf.account)
     assert_equal('filekey', conf.key)
+    assert_match(/test\/fixtures\/config\.txt$/, conf.filepath)
   end
 
   def test_load_unavailable
-    Esgob::Config.expects(:file_paths).with().returns([
+    Esgob::Config.expects(:default_filepaths).with().returns([
       '/doesnt/exist/shuuKee6'
     ])
 

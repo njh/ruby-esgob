@@ -1,4 +1,7 @@
 class Esgob::Config
+  # Path to the configuration file
+  # @return [String]
+  attr_accessor :filepath
   # @return [String]
   attr_accessor :endpoint
   # @return [String]
@@ -22,18 +25,12 @@ class Esgob::Config
 
   # Get an ordered list of paths to possible Esgob configuration files
   # @return [Array<String>] Array of file paths
-  def self.file_paths
+  def self.default_filepaths
     [
       File.join(ENV['HOME'], '.esgob'),
       '/etc/esgob',
       '/usr/local/etc/esgob'
     ]
-  end
-
-  # Get an ordered list of paths to possible Esgob configuration files
-  # @return [Array<String>] Array of file paths
-  def file_paths
-    self.class.file_paths
   end
 
   # Try and read Esgob configuration either from
@@ -49,7 +46,7 @@ class Esgob::Config
         :key => ENV['ESGOB_KEY']
       )
     else
-      file_paths.each do |path|
+      default_filepaths.each do |path|
         if File.exist?(path)
           return load_file(path)
         end
@@ -64,7 +61,8 @@ class Esgob::Config
   # If no filepath is given, save to the default filepath
   # @param [String] filepath Optional path to a configuration file
   def save(filepath=nil)
-    filepath = file_paths.first if filepath.nil?
+    self.filepath = filepath unless filepath.nil?
+    self.filepath = self.class.default_filepaths.first unless self.filepath.nil?
 
     File.open(filepath, 'wb') do |file|
       each_pair do |key,value|
@@ -77,6 +75,7 @@ class Esgob::Config
   # passing the key and value as parameters.
   def each_pair
     instance_variables.sort.each do |var|
+      next if var == :@filepath
       yield(var.to_s.sub(/^@/,''), instance_variable_get(var))
     end
   end
@@ -85,7 +84,7 @@ class Esgob::Config
   protected
 
   def self.load_file(filepath)
-    config = self.new
+    config = self.new(:filepath => filepath)
 
     File.foreach(filepath) do |line|
       if line =~ /^(\w+)\s+(.+)$/
