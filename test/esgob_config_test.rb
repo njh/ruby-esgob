@@ -1,6 +1,7 @@
 $:.unshift(File.dirname(__FILE__))
 
 require 'test_helper'
+require 'tempfile'
 require 'esgob'
 
 class TestConfig < MiniTest::Unit::TestCase
