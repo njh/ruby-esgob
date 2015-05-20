@@ -62,7 +62,7 @@ class Esgob::Config
   # @param [String] filepath Optional path to a configuration file
   def save(filepath=nil)
     self.filepath = filepath unless filepath.nil?
-    self.filepath = self.class.default_filepaths.first unless self.filepath.nil?
+    self.filepath = self.class.default_filepaths.first if filepath.nil?
 
     File.open(filepath, 'wb') do |file|
       each_pair do |key,value|
