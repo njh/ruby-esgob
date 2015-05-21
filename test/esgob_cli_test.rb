@@ -1,6 +1,7 @@
 $:.unshift(File.dirname(__FILE__))
 
 require 'test_helper'
+require 'thor'
 require 'esgob'
 
 class TestCLI < MiniTest::Unit::TestCase
@@ -18,6 +19,20 @@ class TestCLI < MiniTest::Unit::TestCase
     # Reset environment variables after each test
     ENV.delete('ESGOB_ACCOUNT')
     ENV.delete('ESGOB_KEY')
+  end
+
+  def test_config
+    shell = Thor::Base.shell.new
+    shell.expects(:ask).with("What is your Esgob account name?").returns('ask_acct')
+    shell.expects(:ask).with("What is your Esgob key?").returns('ask_key')
+
+    config = Esgob::Config.new
+    Esgob::Config.expects(:new).with().returns(config)
+    config.filepath = '/etc/esgob.conf'
+    config.expects(:save)
+
+    output = capture(:stdout) { Esgob::CLI.start(%w(config), :shell => shell) }
+    assert_equal "Configuration written to /etc/esgob.conf\n", output
   end
 
   def test_account

@@ -25,13 +25,22 @@ class Esgob::CLI < Thor
     end
   end
 
+  desc "config", "Save the Esgob account and key"
+  def config
+    config = Esgob::Config.new
+    config.account = ask("What is your Esgob account name?")
+    config.key = ask("What is your Esgob key?")
+    config.save
+    say "Configuration written to #{config.filepath}"
+  end
+
   desc "account", "Display account info"
   def account
     client.accounts_get.each_pair do |k, v|
       say sprintf("%8s: %s\n", k, v)
     end
   end
-  
+
   desc "domains", "List all domains"
   def domains
     print_table(
@@ -130,5 +139,5 @@ class Esgob::CLI < Thor
       end
     end
   end
-  
+
 end
