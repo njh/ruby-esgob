@@ -35,11 +35,11 @@ class Esgob::Config
 
   # Try and read Esgob configuration either from
   # Environment variables or one of the config files
-  # @param [String] filepath Optional path to a configuration file
+  # @param [String] path Optional path to a configuration file
   # @return Esgob::Config
-  def self.load(filepath=nil)
-    if !filepath.nil?
-      load_file(filepath)
+  def self.load(path=nil)
+    if !path.nil?
+      load_file(path)
     elsif ENV['ESGOB_ACCOUNT'] and ENV['ESGOB_KEY']
       self.new(
         :account => ENV['ESGOB_ACCOUNT'],
@@ -59,10 +59,13 @@ class Esgob::Config
 
   # Save Esgob configuration to file
   # If no filepath is given, save to the default filepath
-  # @param [String] filepath Optional path to a configuration file
-  def save(filepath=nil)
-    self.filepath = filepath unless filepath.nil?
-    self.filepath = self.class.default_filepaths.first if filepath.nil?
+  # @param [String] path Optional path to a configuration file
+  def save(path=nil)
+    if !path.nil?
+      self.filepath = path 
+    elsif filepath.nil?
+      self.filepath = self.class.default_filepaths.first
+    end
 
     File.open(filepath, 'wb') do |file|
       each_pair do |key,value|
@@ -83,10 +86,10 @@ class Esgob::Config
 
   protected
 
-  def self.load_file(filepath)
-    config = self.new(:filepath => filepath)
+  def self.load_file(path)
+    config = self.new(:filepath => path)
 
-    File.foreach(filepath) do |line|
+    File.foreach(path) do |line|
       if line =~ /^(\w+)\s+(.+)$/
         method, value = ["#{$1}=", $2]
         if config.respond_to?(method)

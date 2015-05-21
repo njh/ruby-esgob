@@ -88,7 +88,29 @@ class TestConfig < MiniTest::Unit::TestCase
     assert_equal(["account=abc", "key=xyz"], array)
   end
 
-  def test_save_config
+  def test_save_config_to_default
+    tempfile = Tempfile.new('esgob-config-test')
+    tempfile.close
+
+    Esgob::Config.expects(:default_filepaths).with().returns([tempfile.path])
+
+    config = Esgob::Config.new
+    config.account = 'a'
+    config.key = 'k'
+    config.save
+
+    assert_equal(
+      "account a\n"+
+      "key k\n",
+      tempfile.open.read
+    )
+
+    assert_equal(tempfile.path, config.filepath)
+
+    tempfile.unlink
+  end
+
+  def test_save_config_with_path
     tempfile = Tempfile.new('esgob-config-test')
     tempfile.close
 
