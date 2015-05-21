@@ -57,7 +57,7 @@ class TestClient < MiniTest::Unit::TestCase
   end
 
   def test_new_client_with_no_config_files
-    Esgob::Config.expects(:file_paths).with().returns([])
+    Esgob::Config.expects(:default_filepaths).with().returns([])
     err = assert_raises(RuntimeError) { Esgob::Client.new }
     assert_equal 'Unable to load Esgob configuration', err.message
   end
