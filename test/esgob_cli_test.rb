@@ -9,10 +9,9 @@ class TestCLI < MiniTest::Unit::TestCase
     # Run before each test
     FakeWeb.clean_registry
 
-    @client = Esgob::Client.new('acct', 'xxxx')
-    Esgob::Client.stubs(:new).returns(@client)
-
     ENV['THOR_SHELL'] = 'Basic'
+    ENV['ESGOB_ACCOUNT'] = 'acct'
+    ENV['ESGOB_KEY'] = 'xxxx'
   end
 
   def teardown
@@ -117,9 +116,11 @@ class TestCLI < MiniTest::Unit::TestCase
   end
 
   def test_slaves_sync
-    @client.expects(:domains_slaves_list).with().returns('a.com' => '195.177.253.169', 'b.com' => '195.177.253.169')
-    @client.expects(:domains_slaves_delete).with('a.com').returns(:action => 'domain deleted')
-    @client.expects(:domains_slaves_add).with('c.com', '195.177.253.169').returns(:action => 'domain added')
+    client = Esgob::Client.new
+    client.expects(:domains_slaves_list).with().returns('a.com' => '195.177.253.169', 'b.com' => '195.177.253.169')
+    client.expects(:domains_slaves_delete).with('a.com').returns(:action => 'domain deleted')
+    client.expects(:domains_slaves_add).with('c.com', '195.177.253.169').returns(:action => 'domain added')
+    Esgob::Client.stubs(:new).returns(client)
 
     output = capture(:stdout) { Esgob::CLI.start(['slaves-sync', fixture_path('sync-domain-list.txt'), '195.177.253.169']) }
     assert_match "a.com => domain deleted\n", output
