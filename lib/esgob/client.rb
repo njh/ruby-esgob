@@ -16,7 +16,7 @@ class Esgob::Client
   #   @param [String] account
   #   @param [String] key
   # @overload initialize(args)
-  #   @param [Hash] options 
+  #   @param [Hash] options
   #   @option options [String] :endpoint The URI of the API endpoint
   #   @option options [String] :account The account name
   #   @option options [String] :key The API key
@@ -29,7 +29,7 @@ class Esgob::Client
     if args.empty?
       # Load configuration from file if no arguments were given
       @config = Esgob::Config.load
-    elsif args.first.is_a?(Esgob::Config) 
+    elsif args.first.is_a?(Esgob::Config)
       @config = args.first
     elsif args.first.is_a?(Hash)
       @config = Esgob::Config.new(args.first)

@@ -62,7 +62,7 @@ class Esgob::Config
   # @param [String] path Optional path to a configuration file
   def save(path=nil)
     if !path.nil?
-      self.filepath = path 
+      self.filepath = path
     elsif filepath.nil?
       self.filepath = self.class.default_filepaths.first
     end
