@@ -36,7 +36,7 @@ class TestConfig < MiniTest::Unit::TestCase
     ENV['HOME'] = '/home/bob'
     assert_instance_of(Array, Esgob::Config.default_filepaths)
     assert_includes(Esgob::Config.default_filepaths, '/home/bob/.esgob')
-    assert_includes(Esgob::Config.default_filepaths, '/etc/esgob')
+    assert_includes(Esgob::Config.default_filepaths, '/etc/esgob.conf')
   end
 
   def test_load_from_env
