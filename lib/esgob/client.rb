@@ -40,7 +40,7 @@ class Esgob::Client
     end
 
     if config.nil?
-      raise "Unable to load Esgob configuration"
+      raise(Esgob::UnconfiguredError, "Unable to load Esgob configuration")
     end
 
     if config.account.nil? or config.account.empty?

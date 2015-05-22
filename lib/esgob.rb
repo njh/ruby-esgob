@@ -14,4 +14,7 @@ module Esgob
       @code = code
     end
   end
+  
+  # Exception raised if client is configured
+  class UnconfiguredError < StandardError; end
 end

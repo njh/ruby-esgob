@@ -22,6 +22,9 @@ class Esgob::CLI < Thor
       super(args, config)
     rescue Esgob::ServerError => err
       $stderr.puts config[:shell].set_color("=> Error: #{err.message} [#{err.code}]", :red, :bold)
+    rescue Esgob::UnconfiguredError => err
+      $stderr.puts config[:shell].set_color("=> Error: #{err.message}", :red, :bold)
+      $stderr.puts "Use the 'esgob config' command to create a configuration file."
     end
   end
 
@@ -127,7 +130,11 @@ class Esgob::CLI < Thor
   private ######################################################################
 
   def client
-    @client ||= Esgob::Client.new(options[:account], options[:key])
+    @client ||= if options[:account] and options[:key]
+      Esgob::Client.new(options[:account], options[:key])
+    else
+      Esgob::Client.new
+    end
   end
 
   def check_action

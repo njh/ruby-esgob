@@ -43,6 +43,14 @@ class TestCLI < MiniTest::Unit::TestCase
     assert_match " credits: 48\n", output
   end
 
+  def test_account_unconfigured
+    Esgob::Config.expects(:load).with().returns(nil)
+
+    output = capture(:stderr) { Esgob::CLI.start(%w(account)) }
+    assert_match "=> Error: Unable to load Esgob configuration\n", output
+    assert_match "Use the 'esgob config' command to create a configuration file.\n", output
+  end
+
   def test_account_error
     FakeWeb.register_uri(
       :get, %r{^https?://api\.esgob\.com(:443)?/},
