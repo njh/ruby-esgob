@@ -28,8 +28,8 @@ class Esgob::Config
   def self.default_filepaths
     [
       File.join(ENV['HOME'], '.esgob'),
-      '/etc/esgob',
-      '/usr/local/etc/esgob'
+      '/usr/local/etc/esgob.conf',
+      '/etc/esgob.conf'
     ]
   end
 
