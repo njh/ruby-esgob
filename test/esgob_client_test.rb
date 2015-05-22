@@ -172,7 +172,7 @@ class TestClient < MiniTest::Unit::TestCase
       {
         :credits => 48,
         :users => [],
-        :added => Time.parse('2015-02-01 12:07:14 +0000'),
+        :added => Time.utc(2015, 2, 1, 12, 07, 14),
         :id => 'xyz',
         :name => 'Person Name'
       },

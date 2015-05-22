@@ -78,7 +78,7 @@ class Esgob::Config
   # passing the key and value as parameters.
   def each_pair
     instance_variables.sort.each do |var|
-      next if var == :@filepath
+      next if var.to_s == '@filepath'
       yield(var.to_s.sub(/^@/,''), instance_variable_get(var))
     end
   end
